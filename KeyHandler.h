@@ -27,7 +27,6 @@
 #include <list>
 
 #include "Modules/Island/HeightMap.h"
-#include "GameState.h"
 
 class BoidsSystem;
 class Dragon;
@@ -73,7 +72,6 @@ private:
     HeightMap& hmap;
     IMouse& mouse;
     TimeModifier& timeModifier;
-    GameState& gamestate;
     IFrame& frame;
     RenderStateNode *rn;
 
@@ -103,7 +101,6 @@ public:
                Dragon* dragon,
                BoidsSystem* boidssystem,
                TimeModifier& timeModifer,
-               GameState& gamestate,
                MusicPlayer& musicplayer,
                IFrame& frame,
                RenderStateNode* rn);

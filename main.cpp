@@ -78,7 +78,6 @@
 #include "KeyHandler.h"
 #include "TransparentcyNode.h"
 #include "GLSettingsNode.h"
-#include "GameState.h"
 #include "TimeModifier.h"
 
 #include "Modules/Island/Island.h"
@@ -89,6 +88,17 @@
 #include "Modules/Boid/BoidsSystem.h"
 
 #include "HUD/DragonHUD.h"
+
+#include "scripts/AIscripts/support/MixedStuff.h"
+
+//scriptsystem
+#include <ScriptSystem.h>
+#include <TestStuff/ScriptKeyHandler.h>
+
+//test includes
+#include <Math/Vector.h>
+//#include <SubSystems/StoryProgression/StoryP.h>
+//#include <SubSystems/AISubSystem/StateMashine.h>
 
 // Additional namespaces
 using namespace OpenEngine::Core;
@@ -115,7 +125,6 @@ struct Config {
     IKeyboard*            keyboard;
     IJoystick*            joystick;
     ISceneNode*           scene;
-    GameState*            gamestate;
     ISoundSystem*         soundsystem;
     MusicPlayer*          musicplayer;
     TimeModifier*         timeModifier;
@@ -142,7 +151,6 @@ struct Config {
         , keyboard(NULL)
         , joystick(NULL)
         , scene(NULL)
-        , gamestate(NULL)
         , soundsystem(NULL)
         , musicplayer(NULL)
         , timeModifier(NULL)
@@ -190,6 +198,84 @@ int main(int argc, char** argv) {
     Engine* engine = new Engine();
     Config config(*engine);
 
+   //test scriptsystem
+    ScriptSystem::InitScriptSystem("projects/DragonPanic/scripts/", engine);
+/*
+   //test get global func
+   int ip = 50;
+   ScriptSystem::RunScriptFunc("defs.lua", "SetP", "", "p", "", &ip);
+
+   int i;
+   bool b;
+   double d;
+   string s;
+   int* ip2;
+
+   ScriptSystem::GetGlobal("defs.lua", "count", 'i', &i);
+   ScriptSystem::GetGlobal("defs.lua", "version", 's', &s);
+   ScriptSystem::GetGlobal("defs.lua", "checked", 'b', &b);
+   ScriptSystem::GetGlobal("defs.lua", "time", 'd', &d);
+   ScriptSystem::GetGlobal("defs.lua", "p", 'p', &ip2);
+
+   logger.info << "values returned are: " << i << ", " << s << ", " << b << ", " << d << ", " << *ip2 << logger.end;
+*/
+    //register the project script activatefunc
+//    ScriptSystem::RegisterNonClassFunc("ActivateAISupport", ActivateAISupportFuncs);
+
+    //test scriptvector
+//    Vector<3, float> testvec = Vector<3, float>(4,4,4);
+//    ScriptSystem::RunScriptFunc("/home/jakob/Skrivebord/openengine/projects/DragonPanic/scripts/AIscripts/VectorTest.lua", "test", "", "p", "", &testvec);
+
+ //   ScriptSystem::RunScript("usage.lua");
+ //   ssystem->RunScript("testsingleton.lua");
+ //   ssystem->RunScript("setup.lua");
+
+    //userdata test
+  /*  Point* p = new Point(12, 34);
+    ssystem->RunScriptFunc("testscript.lua", "TestUserData", "u", "u", p, sizeof(*p), p, sizeof(*p));
+    logger.info << "point returned with x: " << p->x << " and y: " << p->y << logger.end;    */
+
+    //string test
+ /*   string s = "kan du appended???";
+    ssystem->RunScriptFunc("testscript.lua", "TestString", "s", "s", s.c_str(), &s);
+    logger.info << "resultat af test: " << s << logger.end;*/
+
+    //bool test
+/*    bool b = true;
+    ssystem->RunScriptFunc("testscript.lua", "TestBool", "b", "b", b, &b);
+    if (b)
+	logger.info << "true" << logger.end;
+    else
+    	logger.info << "false" << logger.end;*/
+
+    //int test
+/*    int i = 42;
+    ssystem->RunScriptFunc("testscript.lua", "TestInt", "i", "i", i, &i);
+    logger.info << "resultat af test: " << i << logger.end;
+
+    //float test
+    double d = 25.96;
+    ssystem->RunScriptFunc("testscript.lua", "TestFloat", "d", "d", d, &d);
+    logger.info << "resultat af test: " << d << logger.end;*/
+
+    //test of story progression
+ /*   ScriptSystem::RunScript("TestStoryP.lua");
+
+    StoryP* sp;
+    ScriptSystem::RunScriptFunc("TestStoryP.lua", "GetStory", "", "p", &sp);
+    sp->Mark("KilledMorgan");
+    logger.info << "we are on the CPP side and have killed Morgan: " 
+		<< sp->IsReached("KilledMorgan") << logger.end;	*/
+
+    //test statemashines 
+/*    ScriptSystem::RunScript("teststatemashine.lua");
+
+    StateMashine* sm;
+    ScriptSystem::RunScriptFunc("teststatemashine.lua", "GetMashine", "", "p", &sm);
+    ScriptSystem::RunScriptFunc("teststatemashine.lua", "PrintState", "", "");
+    sm->GotoState("gaurding");
+    ScriptSystem::RunScriptFunc("teststatemashine.lua", "PrintState", "", "");*/
+
     // Setup the engine
     SetupResources(config);
     SetupDisplay(config);
@@ -199,6 +285,11 @@ int main(int argc, char** argv) {
     SetupRendering(config);
     SetupScene(config);
     
+    //these test are here cause at this point the default scripts have all been run
+//    ScriptSystem::RunScript("define.lua", "teststack");
+ //   ScriptSystem::RunScript("usage.lua", "teststack");
+//    ScriptSystem::RunScript("testscript.lua", "teststack");
+
     // Possibly add some debugging stuff
     SetupDebugging(config);
 
@@ -209,6 +300,8 @@ int main(int argc, char** argv) {
     // Print out any profiling info
     config.prof.DumpInfo();
 // #endif
+
+    ScriptSystem::DeinitScriptSystem();
 
     // release event system
     // post condition: scene and modules are not processed
@@ -227,37 +320,25 @@ int main(int argc, char** argv) {
 
 
 void SetupParticleSystem(Config& config) {
-    config.particlesystem = new ParticleSystem::ParticleSystem();
-    
-    // Add to engine for processing time (with its timer)
-    //config.pstimer = 
-    //new ParticleSystem::ParticleSystemTimer(*config.particlesystem);
-    config.engine.InitializeEvent().Attach(*config.particlesystem);
-    //config.engine.ProcessEvent().Attach(*config.pstimer);
-    config.engine.DeinitializeEvent().Attach(*config.particlesystem);
+
+    //get particle system from setupscript
+    OpenEngine::ParticleSystem::ParticleSystem* ps;	
+    ScriptSystem::RunScriptFunc("setup.lua", "GetSystem", "", "", "p", &ps);
+    config.particlesystem = ps;
 
 }
 
 void SetupSound(Config& config) {
-    config.soundsystem = new OpenALSoundSystem(config.scene,config.camera);
-    config.musicplayer = new MusicPlayer(config.camera,config.soundsystem);
-    bool enableSound = true;
-    if (enableSound) {
-        // setup the sound system
-        config.soundsystem->SetMasterGain(1.0);
-        config.engine.ProcessEvent().Attach(*config.soundsystem);
 
-        // setup the music player
-        config.musicplayer->AddSound("Music/beak.ogg");
-//         config.musicplayer->AddSound("Music/defibrilation.ogg");
-//         config.musicplayer->AddSound("Music/glow.ogg");
-//         config.musicplayer->AddSound("Music/trouble.ogg");
-        config.musicplayer->SetGain(0.3);
-        config.musicplayer->Shuffle(true);
-        config.musicplayer->Next();
-        config.musicplayer->Play();
-        config.engine.ProcessEvent().Attach(*config.musicplayer);
-    }
+    ScriptSystem::RunScriptFunc("sound.lua", "Setup", "", "pp", "", config.scene, config.camera);
+
+    ISoundSystem* ss;
+    ScriptSystem::RunScriptFunc("sound.lua", "GetSoundSystem", "", "", "p", &ss);
+    config.soundsystem = ss;	
+
+    MusicPlayer* mp;
+    ScriptSystem::RunScriptFunc("sound.lua", "GetMusicPlayer", "", "", "p", &mp);
+    config.musicplayer = mp;
 }
 
 void SetupResources(Config& config) {
@@ -287,7 +368,11 @@ void SetupDisplay(Config& config) {
     //config.frame         = new SDLFrame(1024, 768, 32, FRAME_FULLSCREEN);    
     config.frame         = &config.env->GetFrame();
     config.viewingvolume = new InterpolatedViewingVolume(*(new ViewingVolume()));
-    config.camera        = new FollowCamera( *config.viewingvolume );
+
+    FollowCamera* cam;
+    ScriptSystem::RunScriptFunc("setup.lua", "GetCamera", "", "p", "p", config.viewingvolume, &cam);
+    config.camera = cam;
+
     //config.frustum       = new Frustum(*config.camera, 20, 3000);
     config.viewport      = new Viewport(*config.frame);
     config.viewport->SetViewingVolume(config.camera);
@@ -463,11 +548,10 @@ void SetupScene(Config& config) {
 
     
     // game state logic
-    config.gamestate = new GameState(120);
-    boids->BoidSystemEvent().Attach(*config.gamestate);
+    ScriptSystem::RunScriptFunc("logic.lua", "Init", "", "i", "", 120);
 
     KeyHandler* key_h = new KeyHandler(*config.camera, *targetNode, *heightMap,
-                                       *config.mouse, island, dragon, boids, *timeModifier, *config.gamestate, *config.musicplayer, *config.frame, renderStateNode);
+                                       *config.mouse, island, dragon, boids, *timeModifier, *config.musicplayer, *config.frame, renderStateNode);
     //    KeyHandler* key_h = new KeyHandler(*config.camera, *targetNode, *heightMap, island, dragon, boids, *timeModifier, *config.gamestate);
 
     config.engine.ProcessEvent().Attach(*key_h);
@@ -487,11 +571,14 @@ void SetupScene(Config& config) {
 
     //HUD
     config.textureLoader->SetDefaultReloadPolicy(Renderers::TextureLoader::RELOAD_QUEUED);
-    DragonHUD* hud = new DragonHUD(*config.frame, *config.gamestate,
-                                   *config.hud, *config.textureLoader);
+    DragonHUD* hud = new DragonHUD(*config.frame, *config.hud, *config.textureLoader);
     config.textureLoader->SetDefaultReloadPolicy(Renderers::TextureLoader::RELOAD_NEVER);
     //config.scene->AddNode(hud->GetLayerNode());
     config.engine.ProcessEvent().Attach(*hud);
+
+    //script test
+    ScriptKeyHandler* skey = new ScriptKeyHandler();
+    config.keyboard->KeyEvent().Attach(*skey);
 }
 
 void SetupDebugging(Config& config) {

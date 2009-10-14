@@ -10,8 +10,6 @@
 #ifndef _TIMER_LAYER_H_
 #define _TIMER_LAYER_H_
 
-#include "../GameState.h"
-
 #include <Core/IListener.h>
 #include <Display/IFrame.h>
 #include <Display/HUD.h>
@@ -19,6 +17,7 @@
 #include <Renderers/TextureLoader.h>
 #include <Resources/CairoResource.h>
 #include <Utils/CairoTextTool.h>
+#include <ScriptSystem.h>
 
 using OpenEngine::Core::IListener;
 using OpenEngine::Renderers::RenderingEventArg;
@@ -36,14 +35,12 @@ private:
     CairoResourcePtr timeTexture;
     CairoResourcePtr pointTexture;
     HUD::Surface* logoSurface, *timeSurface, *pointSurface;
-    unsigned int frameWidth, frameHeight;
-    GameState& gamestate;
+    unsigned int frameWidth, frameHeight;    
     Display::HUD& hud;
     TextureLoader& texLoader;
-    unsigned int timeleft, score;
+    int timeleft, score;
 public:
-    DragonHUD(IFrame& frame, GameState& gamestate,
-              HUD& hud, TextureLoader& texLoader);
+    DragonHUD(IFrame& frame, HUD& hud, TextureLoader& texLoader);
     virtual ~DragonHUD();
 
     void Handle(ProcessEventArg arg);

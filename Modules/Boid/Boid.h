@@ -4,6 +4,9 @@
 //include templated classes only
 #include <Math/Vector.h>
 
+//scriptsystem
+#include <ScriptSystem.h>
+
 using OpenEngine::Math::Vector;
 
 class BoidsSystem;
@@ -39,7 +42,7 @@ class Boid {
 public:
     Boid(HeightMap* heightMap, OscSurface* oscsurface, BoidsSystem* boidssystem, 
          Vector<3,float> position, Vector<3,float> forward,
-         Vector<3,float> velocity, Vector<3,float> color, IMonoSound& voice,
+         Vector<3,float> velocity, Vector<3,float> color, 
          OpenEngine::ParticleSystem::ParticleSystem& oeparticlesystem,
          OpenEngine::Renderers::TextureLoader& texloader,
          ISceneNode* particleRoot);
@@ -71,7 +74,7 @@ private:
     Vector<3,float> color;
     bool airborn;
 
-    IMonoSound& voice;
+//    IMonoSound& voice;
 
     void draw2(  bool shadow );
 
@@ -108,6 +111,10 @@ private:
     bool dead;
 
     double prevTime;
+
+    //id
+//    int id;
+
 };
 
 #endif

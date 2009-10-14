@@ -34,7 +34,6 @@ KeyHandler::KeyHandler(FollowCamera& camera,
                        Dragon* dragon,
                        BoidsSystem* boidssystem,
                        TimeModifier& timeModifier,
-                       GameState& gamestate,
                        MusicPlayer& musicplayer,
                        IFrame& frame,
                        RenderStateNode* rn)
@@ -43,7 +42,6 @@ KeyHandler::KeyHandler(FollowCamera& camera,
     , hmap(hmap)
     , mouse(mouse)
     , timeModifier(timeModifier) 
-    , gamestate(gamestate)
     , frame(frame)
     , rn(rn)
     , up(0),down(0),left(0),right(0)
@@ -84,15 +82,15 @@ void KeyHandler::ResetGame() {
     timeFactor = 1.0;
     timeModifier.SetFactor(timeFactor);
     done = pause = false;
-    gamestate.Reset();
+    ScriptSystem::RunScriptFunc("logic.lua", "Reset", "", "", "");
 }
 void KeyHandler::TogglePauseGame() {
     if (pause) {
         timeModifier.SetFactor(timeFactor);
-        gamestate.Unpause();
+	ScriptSystem::RunScriptFunc("logic.lua", "Unpause", "", "", "");
     } else {
         timeModifier.SetFactor(0.0);
-        gamestate.Pause();
+	ScriptSystem::RunScriptFunc("logic.lua", "Pause", "", "", "");
     }
     pause = !pause;
 }
@@ -114,7 +112,10 @@ void KeyHandler::Handle(ProcessEventArg arg) {
     // @todo - this should be in a init handler
     mouse.HideCursor();
 
-    if(gamestate.GetTimeLeft() <= 0) {
+    int timeleft;
+    ScriptSystem::RunScriptFunc("logic.lua", "GetTimeLeft", "", "", "i", &timeleft);
+
+    if(timeleft <= 0) {
         done = true;
         timeModifier.SetFactor(0.0);
     }

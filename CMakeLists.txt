@@ -37,6 +37,10 @@ SET( PROJECT_SOURCES
   Modules/Dragon/Tube.cpp
 
   HUD/DragonHUD.cpp
+
+  #egne tilføjelser
+  scripts/AIscripts/support/ScriptFloatVector.cpp
+  scripts/AIscripts/support/MixedStuff.cpp
 )
 
 # Include needed to use SDL under Mac OS X
@@ -74,4 +78,5 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME}
   Extensions_OpenALSoundSystem
   Extensions_MusicPlayer
   Extensions_GLUT
+  Extensions_LuaScriptSystem
 )

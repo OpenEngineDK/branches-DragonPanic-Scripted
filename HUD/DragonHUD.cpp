@@ -15,8 +15,8 @@
 
 using namespace OpenEngine::Resources;
 
-DragonHUD::DragonHUD(IFrame& frame, GameState& gamestate, HUD& hud, TextureLoader& texLoader)
-    : gamestate(gamestate), hud(hud), texLoader(texLoader) {
+DragonHUD::DragonHUD(IFrame& frame, HUD& hud, TextureLoader& texLoader)
+    : hud(hud), texLoader(texLoader) {
 
     ITextureResourcePtr logo = 
         ResourceManager<ITextureResource>::Create("logo/small.png");
@@ -54,7 +54,7 @@ DragonHUD::DragonHUD(IFrame& frame, GameState& gamestate, HUD& hud, TextureLoade
     timeSurface->SetPosition( position[0]-offset,
                                position[1]-offset);
 
-    timeleft = gamestate.GetTimeLeft();
+    ScriptSystem::RunScriptFunc("logic.lua", "GetTimeLeft", "", "", "i", &timeleft);
     char timestring[255];
     int min = timeleft / 60;
     int sec =  timeleft - min*60;
@@ -74,7 +74,7 @@ DragonHUD::DragonHUD(IFrame& frame, GameState& gamestate, HUD& hud, TextureLoade
     position = pointSurface->GetPosition();
     pointSurface->SetPosition( position[0]+offset,
                                position[1]-offset);
-    score = gamestate.GetScore();
+    ScriptSystem::RunScriptFunc("logic.lua", "GetScore", "", "", "i", &score);
     std::string points = Convert::ToString( score );
     textTool->SetAlignment(CairoTextTool::LEFT);
     textTool->DrawText(points, pointTexture);
@@ -88,8 +88,13 @@ DragonHUD::~DragonHUD() {
 }
 
 void DragonHUD::Handle(ProcessEventArg arg) {
-    if (timeleft != gamestate.GetTimeLeft()) {
-      timeleft = gamestate.GetTimeLeft();
+
+    int curtime, curscore;
+    ScriptSystem::RunScriptFunc("logic.lua", "GetTimeLeft", "", "", "i", &curtime);
+    ScriptSystem::RunScriptFunc("logic.lua", "GetScore", "", "", "i", &curscore);
+
+    if (timeleft != curtime) {
+      timeleft = curtime;
       char timestring[255];
       int min = timeleft / 60;
       int sec =  timeleft - min*60;
@@ -99,8 +104,8 @@ void DragonHUD::Handle(ProcessEventArg arg) {
       textTool->DrawText(time, timeTexture);
       timeTexture->RebindTexture();
     }
-    if (score != gamestate.GetScore()) {
-      score = gamestate.GetScore();
+    if (score != curscore) {
+      score = curscore;
       std::string points = Convert::ToString( score );
       textTool->SetAlignment(CairoTextTool::LEFT);
       textTool->DrawText(points, pointTexture);

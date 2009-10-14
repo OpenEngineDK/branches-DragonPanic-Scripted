@@ -35,33 +35,17 @@ BoidsSystem::BoidsSystem(HeightMap* heightMap, OscSurface* oscsurface, ISoundSys
     disableLogic = false;
     aliveBoids = numberOfBoids;
 
-    randGen.SeedWithTime();
-    AddSoundToList("SoundFX/vester-aargh.ogg");
-    AddSoundToList("SoundFX/cpvc-AARGH.ogg");
-    AddSoundToList("SoundFX/ian-aargh.ogg");
-    AddSoundToList("SoundFX/jakob-aargh.ogg");
-    AddSoundToList("SoundFX/salomon-aargh.ogg");
-    AddSoundToList("SoundFX/ptx-jargh.ogg");
-
     particleRoot->AddNode(textEffect.GetSceneNode());
     oeparticlesystem.ProcessEvent().Attach(textEffect);
+
+    //setup the stuff the AI script needs to know
+//    logger.info << "heightmap pointer is: " << heightMap << logger.end;
+//    logger.info << "this pointer is: " << this << logger.end;
+//    logger.info << "osc pointer is: " << oscsurface << logger.end;
+//    ScriptSystem::RunScriptFunc("AI.lua", "SetupAI", "", "ppp", "", heightMap, this, oscsurface);
     }
 
-
-void BoidsSystem::AddSoundToList(std::string soundfile) {
-    Resources::ISoundResourcePtr screamres =
-        Resources::ResourceManager<Resources::ISoundResource>
-        ::Create(soundfile);
-    Sound::IMonoSound* screamsound = (Sound::IMonoSound*) //@todo remove cast
-        soundsystem.CreateSound(screamres);
-    screams.push_back(screamsound);
-}
-
 BoidsSystem::~BoidsSystem() {
-    std::vector<Sound::IMonoSound*>::iterator itr;
-    for (itr=screams.begin(); itr!=screams.end(); itr++)
-        delete *itr;
-    screams.clear();
 }
 
 void BoidsSystem::Handle(InitializeEventArg arg) {
@@ -78,7 +62,6 @@ void BoidsSystem::ResetBoids(bool first) {
     for (int i=0; i<gridSize; i++) {
         for (int j=0; j<gridSize; j++) {
             float val = (i+gridSize*j)*1.0/numberOfBoids;
-            unsigned int index = randGen.UniformInt(0,screams.size()-1);
             if (!first)
                 delete boids[i*gridSize+j];
             boids[i*gridSize+j] =
@@ -90,7 +73,7 @@ void BoidsSystem::ResetBoids(bool first) {
                          Vector<3,float>(sin(2*PI*(0.0/3+val))*0.5+0.5,
                                          sin(2*PI*(1.0/3+val))*0.5+0.5, 
                                          sin(2*PI*(2.0/3+val))*0.5+0.5)
-                         .GetNormalize(), *screams.at(index),
+                         .GetNormalize(), 
                          oeparticlesystem, texloader,
                          particleRoot);
         }
@@ -129,8 +112,10 @@ void BoidsSystem::BoidDied(Boid& boid) {
   aliveBoids--;
 
   Vector<3,float> position = boid.GetPosition();
-  BoidSystemEventArg arg = BoidSystemEventArg(BOID_DIED, position);
+/*  BoidSystemEventArg arg = BoidSystemEventArg(BOID_DIED, position);
   this->boidEvents.Notify(arg);
+*/
+  ScriptSystem::RunScriptFunc("logic.lua", "BoidDied", "", "", "");
 
   //@TODO: use eventsystem instead???
   TransformationNode t;
@@ -139,11 +124,11 @@ void BoidsSystem::BoidDied(Boid& boid) {
   //t.SetRotation(Quaternion<float>(Vector<3,float>(0,1,0)).GetNormalize());
   textEffect.EmitText("1", &t);
 }
-
+/*
 IEvent<BoidSystemEventArg>& BoidsSystem::BoidSystemEvent() {
     return boidEvents;
 }
-
+*/
 void BoidsSystem::HandleFire(Vector<3,float> position, float strength) {
     for (int i=0; i<numberOfBoids; i++) {
         // Flee from fire

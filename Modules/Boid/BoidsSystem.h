@@ -25,6 +25,9 @@
 // Text particle system
 #include <Effects/TextEffect.h>
 
+//scriptsystem
+#include <ScriptSystem.h>
+
 //forward reference
 class Boid;
 class HeightMap;
@@ -99,10 +102,10 @@ public:
     float getAlignment();
 
     void BoidDied(Boid& boid);
-    virtual IEvent<BoidSystemEventArg>& BoidSystemEvent();
+//    virtual IEvent<BoidSystemEventArg>& BoidSystemEvent();
 
 private:
-    Event<BoidSystemEventArg> boidEvents;
+//    Event<BoidSystemEventArg> boidEvents;
 
     HeightMap* heightMap;
     OscSurface* oscsurface;
@@ -111,8 +114,6 @@ private:
     ISoundSystem& soundsystem;
     OpenEngine::ParticleSystem::ParticleSystem& oeparticlesystem;
     OpenEngine::Renderers::TextureLoader& texloader;
-    std::vector<Sound::IMonoSound*> screams;
-    RandomGenerator randGen;
 
     Timer timer;
 
@@ -123,7 +124,6 @@ private:
     bool disableLogic;
     int renderState, numberOfRenderStates;
 
-    void AddSoundToList(std::string soundfile);
 };
 
 #endif

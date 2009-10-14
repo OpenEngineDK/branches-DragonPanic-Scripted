@@ -34,14 +34,13 @@ using std::max;
 
 Boid::Boid(HeightMap* heightMap, OscSurface* oscsurface, BoidsSystem* boidssystem,
            Vector<3,float> position, Vector<3,float> forward,
-           Vector<3,float> velocity, Vector<3,float> color, IMonoSound& voice,
+           Vector<3,float> velocity, Vector<3,float> color, 
            OpenEngine::ParticleSystem::ParticleSystem& oeparticlesystem,
            OpenEngine::Renderers::TextureLoader& texloader,
            ISceneNode* particleRoot):
  
     particleRoot(particleRoot),
-    oeparticlesystem(oeparticlesystem),
-    voice(voice) {
+    oeparticlesystem(oeparticlesystem)	{
 
     this->heightMap = heightMap;
     this->oscsurface = oscsurface;
@@ -74,6 +73,10 @@ Boid::Boid(HeightMap* heightMap, OscSurface* oscsurface, BoidsSystem* boidssyste
     drowning = false;
     life = 1.0;
     dead = false;
+
+    //add this boid to the AI script
+//    ScriptSystem::RunScriptFunc("AI.lua", "AddBoid", "", "ppp", "i", boidfire, this, &forward, &id);
+//    logger.info << "id is: " << id << logger.end;
 }
 
 Boid::~Boid(){
@@ -90,19 +93,27 @@ Vector<3,float> Boid::getVelocity() { return velocity; }
 void Boid::addSteering( Vector<3,float> steering, double weight ) {
     Vector<3,float> vect = steering*weight;
     steering_accumulated = steering_accumulated + vect;
+	
+//    ScriptSystem::RunScriptFunc("AI.lua", "AddSteering", "", "", "");
 }
 
 void Boid::addExternalForce( Vector<3,float> force ) {
     external_force_accumulated = external_force_accumulated + force;
+
+//    ScriptSystem::RunScriptFunc("AI.lua", "AddExternalForce", "", "ip", "", id, &force);
 }
 
 void Boid::addExternalImpulse( Vector<3,float> impulse ) {
     external_impulse_accumulated = external_impulse_accumulated + impulse;
+
+//    ScriptSystem::RunScriptFunc("AI.lua", "AddExternalImpulse", "", "ip", "", id, &impulse);
 }
 
 void Boid::addDesiredVelocity( Vector<3,float> steering, double weight ) {
     Vector<3,float> vect = ((steering.GetNormalize()*max_speed) - velocity )*weight;
     steering_accumulated = steering_accumulated + vect;
+
+//    ScriptSystem::RunScriptFunc("AI.lua", "AddVelocity", "", "ipdp", "", id, &steering, weight, &velocity);
 }
 void Boid::gotoTarget( Vector<3,float> target, double radius, double weight, bool squared ) {
     Vector<3,float> targetDir = target-position;
@@ -140,6 +151,11 @@ void Boid::update( double timeDelta ) {
     updateSteering(timeDelta);
     updatePhysics(timeDelta);
     updateLocomotion(timeDelta);
+
+ //   ScriptSystem::RunScriptFunc("AI.lua", "UpdateSteering", "", "id", "", id, timeDelta);
+ //   ScriptSystem::RunScriptFunc("AI.lua", "UpdatePhysics", "", "idpp", "pp", id, timeDelta, &position, &velocity, &GetUprightVector(), &position, &velocity);
+ //   ScriptSystem::RunScriptFunc("AI.lua", "UpdateLocomotion", "", "idppd", "d", id, timeDelta, &position, &velocity, &GetUprightVector(), burned, &burned);
+
     prevTime = prevTime+timeDelta;
 }
 
@@ -225,8 +241,7 @@ void Boid::updatePhysics( double timeDelta ) {
 void Boid::updateLocomotion( double timeDelta ) {
     TransformationNode* tn = boidfire->GetTransformationNode();
     if (tn) tn->SetPosition(position);
-    voice.SetPosition(position);
-
+ 
     Vector<3,float> normal = heightMap->NormalAt(position);
     if (airborn && drowning) normal = Vector<3,float>(0,1,0);
 
@@ -280,7 +295,7 @@ void Boid::updateLocomotion( double timeDelta ) {
     }
     if (hot>1 && life>0) {
         if (!burning) {
-            voice.Play();
+	    ScriptSystem::RunScriptFunc("sound.lua", "Scream", "", "p", "", &position);  
             boidfire->SetActive(true);
         }
         burning = true;
