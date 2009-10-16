@@ -199,7 +199,7 @@ int main(int argc, char** argv) {
     Config config(*engine);
 
    //test scriptsystem
-    ScriptSystem::InitScriptSystem("projects/DragonPanic/scripts/", engine);
+    ScriptSystem::InitScriptSystem("projects/DragonPanic-Scripted/scripts/", engine);
 /*
    //test get global func
    int ip = 50;

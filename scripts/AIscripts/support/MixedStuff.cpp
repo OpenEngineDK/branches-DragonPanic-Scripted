@@ -50,7 +50,7 @@ int ActivateAISupportFuncs(lua_State* L) {
 ScriptHeightMap::ScriptHeightMap(lua_State* L) {
 
   if (ScriptSystem::CheckStackSize(L, "ScriptHeightMap", 1) || 
-      ScriptSystem::CheckArgType(L, "ScriptHeightMap", "userdata", 1, -1))
+      ScriptSystem::CheckArgType(L, "ScriptHeightMap", 'p', 1, -1))
     return;
 
   map = (HeightMap*) lua_touserdata(L, -1);
@@ -107,8 +107,8 @@ int ScriptHeightMap::NormalAt(lua_State* L) {
 int SetTransformationNode(lua_State* L) {
 
   if (ScriptSystem::CheckStackSize(L, "SetTransformationNode", 3) ||
-      ScriptSystem::CheckArgType(L, "SetTransformationNode", "userdata", 1, -2) ||
-      ScriptSystem::CheckArgType(L, "SetTransformationNode", "userdata", 2, -1))
+      ScriptSystem::CheckArgType(L, "SetTransformationNode", 'p', 1, -2) ||
+      ScriptSystem::CheckArgType(L, "SetTransformationNode", 'p', 2, -1))
     return 0;
 
   BoidFire* bf = (BoidFire*) lua_touserdata(L, -2);
@@ -125,8 +125,8 @@ int SetTransformationNode(lua_State* L) {
 int SetActiveBoidfire(lua_State* L) {
 
   if (ScriptSystem::CheckStackSize(L, "SetActiveBoidfire", 3) ||
-      ScriptSystem::CheckArgType(L, "SetActiveBoidfire", "userdata", 1, -2) ||
-      ScriptSystem::CheckArgType(L, "SetActiveBoidfire", "bool", 2, -1))
+      ScriptSystem::CheckArgType(L, "SetActiveBoidfire", 'p', 1, -2) ||
+      ScriptSystem::CheckArgType(L, "SetActiveBoidfire", 'b', 2, -1))
     return 0;
 
   BoidFire* bf = (BoidFire*) lua_touserdata(L, -2);
@@ -139,8 +139,8 @@ int SetActiveBoidfire(lua_State* L) {
 int KillBoid(lua_State* L) {
 
   if (ScriptSystem::CheckStackSize(L, "KillBoid", 3) ||
-      ScriptSystem::CheckArgType(L, "KillBoid", "userdata", 1, -2) ||
-      ScriptSystem::CheckArgType(L, "KillBoid", "userdata", 2, -1))
+      ScriptSystem::CheckArgType(L, "KillBoid", 'p', 1, -2) ||
+      ScriptSystem::CheckArgType(L, "KillBoid", 'p', 2, -1))
     return 0;
   
   Boid* b = (Boid*) lua_touserdata(L, -2);
@@ -155,11 +155,11 @@ int KillBoid(lua_State* L) {
 int MakeRipple(lua_State* L) {
 
   if (ScriptSystem::CheckStackSize(L, "MakeRipple", 6) ||
-      ScriptSystem::CheckArgType(L, "MakeRipple", "userdata", 1, -5) ||
-      ScriptSystem::CheckArgType(L, "MakeRipple", "float", 2, -4) ||
-      ScriptSystem::CheckArgType(L, "MakeRipple", "float", 3, -3) ||
-      ScriptSystem::CheckArgType(L, "MakeRipple", "float", 4, -2) ||
-      ScriptSystem::CheckArgType(L, "MakeRipple", "float", 5, -1))
+      ScriptSystem::CheckArgType(L, "MakeRipple", 'p', 1, -5) ||
+      ScriptSystem::CheckArgType(L, "MakeRipple", 'd', 2, -4) ||
+      ScriptSystem::CheckArgType(L, "MakeRipple", 'd', 3, -3) ||
+      ScriptSystem::CheckArgType(L, "MakeRipple", 'd', 4, -2) ||
+      ScriptSystem::CheckArgType(L, "MakeRipple", 'd', 5, -1))
     return 0;
  
   OscSurface* os = (OscSurface*) lua_touserdata(L, -5);

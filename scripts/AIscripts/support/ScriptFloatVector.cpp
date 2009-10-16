@@ -8,9 +8,9 @@ ScriptFloatVector::ScriptFloatVector(lua_State* L) {
   //choose appropiate constructor
   if (nargs == 3) {
 
-    if (ScriptSystem::CheckArgType(L, "ScriptFloatVector", "float", 1, -3) ||
-	ScriptSystem::CheckArgType(L, "ScriptFloatVector", "float", 2, -2) ||
-	ScriptSystem::CheckArgType(L, "ScriptFloatVector", "float", 3, -1))
+    if (ScriptSystem::CheckArgType(L, "ScriptFloatVector", 'd', 1, -3) ||
+	ScriptSystem::CheckArgType(L, "ScriptFloatVector", 'd', 2, -2) ||
+	ScriptSystem::CheckArgType(L, "ScriptFloatVector", 'd', 3, -1))
       return;
 
     float x = lua_tonumber(L, -3);
@@ -238,7 +238,7 @@ int ScriptFloatVector::SubtractFrom(lua_State* L) {
 int ScriptFloatVector::Mul(lua_State* L) {
 
   if (ScriptSystem::CheckStackSize(L, "Mul", 2) ||
-      ScriptSystem::CheckArgType(L, "Mul", "float", 1, -1))
+      ScriptSystem::CheckArgType(L, "Mul", 'd', 1, -1))
     return 0;
 
   if (vec == NULL) {
@@ -258,7 +258,7 @@ int ScriptFloatVector::Mul(lua_State* L) {
 int ScriptFloatVector::MulTo(lua_State* L) {
 
   if (ScriptSystem::CheckStackSize(L, "MulTo", 2) ||
-      ScriptSystem::CheckArgType(L, "MulTo", "float", 1, -1))
+      ScriptSystem::CheckArgType(L, "MulTo", 'd', 1, -1))
     return 0;
 
   if (vec == NULL) {
@@ -276,7 +276,7 @@ int ScriptFloatVector::MulTo(lua_State* L) {
 int ScriptFloatVector::Devide(lua_State* L) {
 
   if (ScriptSystem::CheckStackSize(L, "Devide", 2) ||
-      ScriptSystem::CheckArgType(L, "Devide", "float", 1, -1))
+      ScriptSystem::CheckArgType(L, "Devide", 'd', 1, -1))
     return 0;
 
   if (vec == NULL) {
@@ -295,7 +295,7 @@ int ScriptFloatVector::Devide(lua_State* L) {
 int ScriptFloatVector::DevideBy(lua_State* L) {
 
   if (ScriptSystem::CheckStackSize(L, "Devide", 2) ||
-      ScriptSystem::CheckArgType(L, "Devide", "float", 1, -1))
+      ScriptSystem::CheckArgType(L, "Devide", 'd', 1, -1))
     return 0;
 
   if (vec == NULL) {
@@ -399,7 +399,7 @@ int ScriptFloatVector::GetZ(lua_State* L) {
 int ScriptFloatVector::SetX(lua_State* L) {
 
   if (ScriptSystem::CheckStackSize(L, "SetX", 2) ||
-      ScriptSystem::CheckArgType(L, "SetX", "float", 1, -1))
+      ScriptSystem::CheckArgType(L, "SetX", 'd', 1, -1))
     return 0;
 
   if (vec == NULL) {
@@ -416,7 +416,7 @@ int ScriptFloatVector::SetX(lua_State* L) {
 int ScriptFloatVector::SetY(lua_State* L) {
 
   if (ScriptSystem::CheckStackSize(L, "SetX", 2) ||
-      ScriptSystem::CheckArgType(L, "SetX", "float", 1, -1))
+      ScriptSystem::CheckArgType(L, "SetX", 'd', 1, -1))
     return 0;
 
   if (vec == NULL) {
@@ -433,7 +433,7 @@ int ScriptFloatVector::SetY(lua_State* L) {
 int ScriptFloatVector::SetZ(lua_State* L) {
 
   if (ScriptSystem::CheckStackSize(L, "SetX", 2) ||
-      ScriptSystem::CheckArgType(L, "SetX", "float", 1, -1))
+      ScriptSystem::CheckArgType(L, "SetX", 'd', 1, -1))
     return 0;
 
   if (vec == NULL) {

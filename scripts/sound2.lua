@@ -1,4 +1,4 @@
 
 function GetScreamIndex ()
-	return 5
+	return -1
 end
