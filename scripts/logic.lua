@@ -33,10 +33,10 @@ function Reset ()
 end
 
 function Pause ()
-	timer:Pause()
+	timer:Stop()
 end
 
 function Unpause ()
-	timer:Unpause()
+	timer:Start()
 end
 
