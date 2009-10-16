@@ -29,6 +29,7 @@ end
 
 function Reset ()
 	timer:Reset()
+	timer:Start()
 	score = 0
 end
 
